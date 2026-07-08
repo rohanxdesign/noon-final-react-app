@@ -42,7 +42,7 @@ export default function FlowRunner({ recipe, step, onStepChange, onExit, onNextF
           transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
         >
           <Screen state={state} onAdvance={advance} overlay={current.overlay} joinError={current.joinError} />
-          {Overlay && <Overlay state={state} onAdvance={advance} />}
+          {Overlay && <Overlay state={state} onAdvance={advance} joinError={current.joinError} />}
         </motion.div>
       </AnimatePresence>
       <FlowPill

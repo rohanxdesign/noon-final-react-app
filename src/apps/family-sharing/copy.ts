@@ -272,4 +272,97 @@ export const copy: Record<ScreenId | OverlayId, Record<string, string>> = {
     payWith: "Pay with",
     confirm: "Confirm",
   },
+  // Task 15. InviteSheet -- these keys were referenced by InviteSheet.tsx (built and
+  // left uncommitted by a prior task) but never actually added to this object, which
+  // meant `copy.inviteSheet.title` etc. resolved to `undefined` at runtime (a real bug,
+  // not just a type gap) -- fixed here without touching InviteSheet.tsx itself, per this
+  // task's brief to leave that file alone. Verified against the scoped M-BottomSheet
+  // instance behind each of its 2 host nodes (3187:72624 family / 3187:73080 duo).
+  // GAP, flagged rather than silently resolved: the two instances are NOT byte-identical
+  // -- the family node reads "Add your loved ones to the Family plan" / "4 more seats
+  // available", while the duo node reads "Add a loved one to your Duo plan" (2 lines) /
+  // "1 seats available" (also a Figma grammar slip -- singular "seat" would be correct
+  // for a 1-seat count, not authored that way). InviteSheet.tsx has no plan-based
+  // branching (single `copy.inviteSheet.title/subtitle`, no duo variant), so the family
+  // copy is used as the single source here -- the duo flow will show the family sheet's
+  // title/seat-count text where Figma's own duo node shows different text. Not fixed by
+  // adding branching, since that would mean modifying InviteSheet.tsx itself, out of
+  // scope for this task -- flagged for whoever picks up InviteSheet.tsx next.
+  inviteSheet: {
+    title: "Add your loved ones to the Family plan",
+    subtitle: "They'll enjoy free delivery on everything",
+    shareInvite: "Share invite",
+    // No "copied" confirmation state exists anywhere in Figma for the invite-link field
+    // (a single non-variant Input instance, copy-icon right-slot only) -- this is a
+    // genuinely unauthored micro-string, kept as a minimal, generic confirmation rather
+    // than inventing elaborate copy for a state Figma never designed.
+    copied: "Copied",
+    footerNote: "Invitee remains on your noon One plan until removed.",
+  },
+  // Task 15. ShareSheet -- no Figma grounding exists for this overlay at all (confirmed:
+  // upgrade.ts's only call site carries `figmaNodeId: ""`/"resolve node in Task 19", and
+  // no "share sheet"/"ios share" sibling frame exists near either InviteSheet host node).
+  // These 2 keys are the minimal generic iOS-share-sheet-mock copy ShareSheet.tsx already
+  // renders (built and left uncommitted by a prior task) -- not sourced from Figma since
+  // there is nothing to source from; kept short and platform-generic rather than invented
+  // marketing copy.
+  shareSheet: {
+    title: "Share",
+    cancel: "Cancel",
+  },
+  // Task 15. JoinFamilySheet -- join-prompt body verified verbatim against the base
+  // component 3180:27794 ("Join Family") AND all 3 live pre-error instances that mount
+  // it (3205:82330, 3207:12793, 3207:16915 -- byte-identical on all 3, including the
+  // owner name "Rahul" and the leading space Figma's own heading literal carries before
+  // "Join" -- trimmed here since it's a text-layer artifact, not intentional copy).
+  // The 3 error variants are the SAME Figma "Error Message" component (3187:74761)
+  // instanced 3 times with different title/body overrides -- confirmed by inspecting the
+  // scoped M-BottomSheet instance behind each error's host screen (3205:87906 /
+  // 3207:16315 / 3207:20437), not the bare 3187:74761 component (which happens to carry
+  // an unrelated "Remove <name>?" override when queried directly -- that's node 3205
+  // -- the removeMemberSheet's own use of this same shared component, Task 18 scope, not
+  // a sign this component is mis-scoped here).
+  joinFamilySheet: {
+    heading: "Join Rahul's family",
+    subtitle: "Enjoy free delivery on everything, any time",
+    benefit1Title: "Unlimited Free Delivery",
+    benefit1Subtitle: "On food, groceries, & shopping",
+    benefit2Title: "Save 10%, 1st of every month",
+    benefit2Subtitle: "Big savings, every month",
+    benefit3Title: "Orders & accounts stay private",
+    benefit3Subtitle: "Share noon One, not your order history",
+    cta: "Join Family plan for free",
+    footerNote: "Your noon One stays active until canceled or removed.",
+    // Error variants -- verbatim per joinError, from 3205:84526 / 3207:14557 / 3207:18679.
+    alreadyInFamilyTitle: "You're already in a Family plan",
+    alreadyInFamilyBody: "To join this one, you'll need to leave your current plan first",
+    alreadySubscribedTitle: "You're already subscribed",
+    alreadySubscribedBody: "To join this one, you'll need to cancel your current plan first",
+    differentCountryTitle: "Join from the same country as the plan owner",
+    differentCountryBody: "To join the plan, you'll need an account in their country. Benefits work only in that country",
+    errorCta: "Got it",
+  },
+  // `joinErrorSheet` is a distinct OverlayId (registry.tsx registers the SAME
+  // JoinFamilySheet component under both `joinFamilySheet` and `joinErrorSheet`, per the
+  // task brief), but copy.ts is keyed by OverlayId, not by component -- so this object
+  // needs its own entry to satisfy the type even though JoinFamilySheet.tsx always reads
+  // from `copy.joinFamilySheet.*` regardless of which overlay id it's mounted under (see
+  // that component's own file comment). Left empty rather than duplicating the
+  // joinFamilySheet block, since nothing ever reads copy.joinErrorSheet.* at runtime.
+  joinErrorSheet: {},
+  // Task 15. MemberJoinedToast -- Figma "M-Toast" component (2240:14174, Dark variant),
+  // instance 3161:31739, verified live inside the "upgrade-family" flow's landing screen
+  // (3161:31576 -- NOT the recipe step's own figmaNodeId 3161:31758/"13 · First member
+  // joined", which is the byte-identical NEXT screen sans toast; the toast is anchored to
+  // the screen BEFORE it visually settles, matching upgrade.ts's step order: memberJoined
+  // action fires on 3161:31576, then the very next step, 3161:31758, carries the
+  // memberJoinedToast overlay -- so mounting this copy on that overlay step, on top of
+  // oneLanding, reproduces the same screen+toast composition Figma shows one step earlier).
+  // Verbatim Figma text is "Kumar Siddharth has joined your family" -- templated here on
+  // {name} since seeds.ts/upgrade.ts always join "Kumar Siddharth" as the first member, but
+  // the underlying state field (state.invite.lastJoined, set by the memberJoined reducer
+  // case) is the real driver, not a hardcoded name.
+  memberJoinedToast: {
+    joined: "{name} has joined your family",
+  },
 };
