@@ -1,4 +1,4 @@
-import type { ScreenId } from "./state/recipes/types";
+import type { ScreenId, OverlayId } from "./state/recipes/types";
 
 /**
  * Every user-facing string in the final-flows module, keyed by screen.
@@ -6,8 +6,17 @@ import type { ScreenId } from "./state/recipes/types";
  * Fill flat: e.g. copy.oneLanding.ctaLabel = "...". For repeated content
  * (FAQ, benefit lists), flatten with numbered keys (faqQuestion1, faqAnswer1,
  * ...) rather than introducing arrays or a second export.
+ *
+ * Task 14 extends the keyspace to also include OverlayId: paymentSheet and
+ * reviewConfirmSheet mount on top of several different host screens (per the
+ * recipes -- paymentSheet on planSheet; reviewConfirmSheet on explorePlans,
+ * cancelSavings, AND cancelReason), so keying their copy by *screen* would
+ * force duplicating identical strings under 3 different screen keys. Keying
+ * by the overlay id itself (orthogonal to ScreenId, exactly like FlowStep's
+ * own `overlay?: OverlayId` field is orthogonal to `screen`) keeps one copy
+ * of each string regardless of which screen currently hosts the overlay.
  */
-export const copy: Record<ScreenId, Record<string, string>> = {
+export const copy: Record<ScreenId | OverlayId, Record<string, string>> = {
   noonHome: {},
   oneLanding: {
     // ActivePlanCard (3136:22678, 3636:25801/25917/26048/26179) — verbatim per plan.type/utility.
@@ -221,4 +230,46 @@ export const copy: Record<ScreenId, Record<string, string>> = {
   success: {},
   cancelSavings: {},
   cancelReason: {},
+  // Task 14. PaymentSheet -- verified against both flow-variant nodes (3261:103309
+  // family, 3187:70138 duo; "Free Upgrade" body 3187:67673/I3261:103880 in-context) --
+  // identical composition/copy on both, only the plan name/price differ (state-derived).
+  // "40 days"/"10 remaining"/"30-day" are Figma marketing literals describing the promo
+  // mechanic (10 rolled-over days + a 30-day upgrade), not state-derived: neither seed
+  // used by upgrade.ts (seeds.activeIndividual) carries a trialDaysLeft to substitute,
+  // and confirmUpgrade (which sets trialDaysLeft: 30) hasn't fired yet at this step --
+  // stateAtStep only applies actions from steps BEFORE the current one. Kept as flat
+  // constants rather than fake-templated against a field that doesn't exist yet.
+  paymentSheet: {
+    freeUpgradeTitle: "FREE upgrade for 40 days",
+    freeUpgradeSubtitle: "We've added the 10 remaining days from your current plan to your 30-day upgrade",
+    todayLabel: "Today",
+    todayNote: "No extra charge. Cancel anytime",
+    todayCharge: "+dhm0.00",
+    fromDateLabel: "From July 1",
+    // GAP (flagged in Task 14 report): Figma's literal text is a template whose
+    // "[plan name] [current plan price]" tokens are never bound to a Figma variable
+    // (confirmed on both 3187:67673 and its in-context instance) -- AND the value
+    // isn't recoverable from FinalFlowState either: by the time this overlay's step
+    // renders, the preceding step's `selectPlan` action has already overwritten
+    // state.plan to the TARGET plan (stateAtStep applies every prior step's action),
+    // so there is no "current/previous plan" left in state to substitute. Rendered
+    // verbatim per the ground rule against inventing unauthored copy.
+    fromDateNote: "{plan} plan price. Billed monthly",
+    billingTooltip: "During the 40-day upgrade, your billing continues as usual at [plan name] [current plan price]/mo — the {plan} plan upgrade is added for free",
+    payWith: "Pay with",
+  },
+  // Task 14. ReviewConfirmSheet -- base "Review & Confirm" component 3201:77070 (switch/
+  // upgrade copy flavor, still live) + 5 of 6 named cancel-flow instances (3207:44420,
+  // 3208:50263, 3208:52967, 3208:60394, 3208:61281 -- byte-identical copy on all 5;
+  // 3208:54026 carries a Figma-authored typo, "upgradw", not reproduced here). All 4
+  // manage.ts switch-flow node IDs (3201:77113, 3161:44599, 3274:32243, 3201:80092)
+  // are stale/redesigned -- see Task 14 report -- so the switch copy below is sourced
+  // from the base component itself, the only surviving instance of that flavor.
+  reviewConfirmSheet: {
+    title: "Review and confirm",
+    switchBody: "Your plan will renew to {plan} plan at {price} every month, beginning {date}. You can add one member to your noon One plan after switching.",
+    cancelBody: "Your plan will renew at {price} every month, beginning {date} after the free upgrade ends. All members will lose access to noon One.",
+    payWith: "Pay with",
+    confirm: "Confirm",
+  },
 };

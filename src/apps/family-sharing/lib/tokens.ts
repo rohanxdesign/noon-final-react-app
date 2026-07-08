@@ -24,6 +24,11 @@ export const finalTokens = {
       success: "#0f8857", // colour/text-n-icon/success
       error: "#d92626", // colour/text-n-icon/error
       onSurfaceBold: "#ffffff", // colour/text-n-icon/on-surface-bold
+      // Task 14 (PaymentSheet/ReviewConfirmSheet). Blue-gray/1000 -- the "Review and
+      // confirm" sheet title color (3201:77070). Same hex as surface.primaryInverted
+      // below but a distinct Figma variable/semantic (text vs. surface), kept separate
+      // per this file's own precedent (e.g. avatar.green vs. decorative.planTagBg).
+      sheetTitle: "#101628",
     },
     surface: {
       primary: "#ffffff", // colour/surface/primary
@@ -35,6 +40,11 @@ export const finalTokens = {
       errorSubtle: "#fff0f0", // colour/surface/error-subtle
       primaryInverted: "#101628", // colour/surface/primary-inverted
       alphaLight80: "rgba(255,255,255,0.8)", // base/colour/alpha-light/80 — invitee ManagePlan cards (3205:82048)
+      // Task 14 -- PaymentSheet/ReviewConfirmSheet scrim, from M-BottomSheet's own bound
+      // variable (get_variable_defs on 3261:103880): colour/surface/overlay-bold, #000000cc
+      // (80% black). Distinct from one-flows' ReviewAndConfirmSheet reference component,
+      // which uses an unbound literal black/50 -- this surface's real Figma value is darker.
+      overlayBold: "#000000cc",
     },
     border: {
       primary: "#eaecf0", // colour/border/primary
@@ -87,6 +97,11 @@ export const finalTokens = {
       // button fill (distinct from colour/surface/primary-inverted #101628).
       offerChipBg: "#f0fdf1",
       neutralBlack: "#0e0e0e",
+      // Task 14 (ReviewConfirmSheet message box, 3201:77070). Gray/100 -- a hairline
+      // border on the surface/secondary message box, from another team's library
+      // (same situation as `hairline` above, kept distinct since the two nodes bind
+      // different variables despite both being near-white).
+      reviewBoxBorder: "#fafafa",
     },
   },
   // Raw px values as string keys, not a semantic t-shirt scale -- Figma didn't
