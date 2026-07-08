@@ -20,6 +20,16 @@ export default defineConfig({
   },
   test: {
     projects: [{
+      // Plain node unit tests — currently the family-sharing behavioral suite
+      // (reducer / recipes / stateAtStep) ported from the florence prototype.
+      // Run with: npm run test  (== vitest run --project unit)
+      extends: true,
+      test: {
+        name: 'unit',
+        environment: 'node',
+        include: ['src/apps/family-sharing/**/*.test.{ts,tsx}']
+      }
+    }, {
       extends: true,
       plugins: [
       // The plugin will run tests for the stories defined in your Storybook config

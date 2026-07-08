@@ -5,6 +5,7 @@ const apps = [
   { slug: 'share-address', title: 'Share Address',  tagline: 'Address bottom sheet flows' },
   { slug: 'one-flows',     title: 'noon One',       tagline: 'Membership, sharing, account flows' },
   { slug: 'wishlist',      title: 'Wishlist',       tagline: 'Collections drawer & multi-select' },
+  { slug: 'family-sharing', title: 'Family Sharing', tagline: 'noon One family plans — 21 dev-ready flows' },
 ]
 
 export default function Hub() {

@@ -1,0 +1,10 @@
+/* ============================================================================
+   family-sharing — surface-specific styles
+   Tokens, Noontree @font-face, and the global reset come from
+   @tokens/index.css (mounted once in src/main.tsx). This file only pulls in
+   the Tailwind layers the ported screens/components are written against.
+   ============================================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
