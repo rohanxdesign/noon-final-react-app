@@ -1,4 +1,5 @@
 import "./index.css";
+import { Retune } from "retune";
 import SmoothCorners from "@ui/SmoothCorners";
 import FinalFlowsApp from "./shell/FinalFlowsApp";
 
@@ -24,6 +25,7 @@ export default function App() {
           <FinalFlowsApp />
         </div>
       </SmoothCorners>
+      {import.meta.env.DEV && <Retune />}
     </div>
   );
 }
