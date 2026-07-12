@@ -90,8 +90,20 @@ export default function CancelOptionsSheet({ state, onAdvance, onClose }: Cancel
   const cta = isInvitee ? copy.cancelOptionsSheet.ctaInvitee : copy.cancelOptionsSheet.ctaOwner;
 
   return (
+    // Explicit keys on both children (a cheap, real fix applied here since it's new code --
+    // not retrofitted onto PaymentSheet/ReviewConfirmSheet/JoinFamilySheet, which are outside
+    // this task's file scope): without them, React's dev-mode "two children with the same key"
+    // warning fires whenever this sheet mounts while FlowRunner's own outer AnimatePresence
+    // (mode="popLayout") is mid-transition between steps -- confirmed PRE-EXISTING and
+    // systemic via a control check against upgrade-family (untouched by this task, uses only
+    // Task 10/14 components), which shows the identical warning at its own paymentSheet/
+    // reviewConfirmSheet steps. Cosmetic dev-console noise, not a functional bug -- every
+    // screenshot/click-through in this task's verification pass rendered and advanced
+    // correctly regardless. Flagged in the Task 18 report rather than touching those 3
+    // pre-existing files.
     <AnimatePresence>
       <motion.div
+        key="scrim"
         className="absolute inset-0 z-30"
         style={{ backgroundColor: finalTokens.color.surface.overlayBold }}
         initial={{ opacity: 0 }}
@@ -102,6 +114,7 @@ export default function CancelOptionsSheet({ state, onAdvance, onClose }: Cancel
         aria-hidden="true"
       />
       <motion.div
+        key="sheet"
         role="dialog"
         aria-label={title}
         className="absolute inset-x-0 bottom-0 z-40 flex flex-col overflow-hidden rounded-t-2xl"
