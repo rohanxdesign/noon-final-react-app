@@ -40,6 +40,17 @@ const STEPS: Record<`${CancelPhase}-${Fill}`, FlowStep[]> = {
   "upgrade-full": [
     { screen: "managePlan", figmaNodeId: "3208:53436", advanceLabel: "Cancel membership", action: { type: "startCancellation" } },
     { screen: "cancelSavings", figmaNodeId: "3208:53463", advanceLabel: "Leave Family" },
+    // KNOWN MISMATCH (Task 14 finding, re-confirmed in Task 18 -- see ReviewConfirmSheet.tsx's
+    // own file comment for the full get_metadata detail): this node is NOT a review-confirm
+    // sheet on inspection -- it's a distinct retention-prompt shape (M-StackedActionBar, "Keep
+    // membership"/"Cancel upgrade" two-button row, current-plan-with-avatars, no payment row,
+    // no single Confirm CTA). Left wired to reviewConfirmSheet rather than rebuilt as a one-off
+    // third component: no Figma/MCP/browser access was available in either task to source its
+    // verbatim title/subtitle copy, and reducer.ts's `keepMembership` action (which would be the
+    // natural handler for its "Keep membership" button) is dispatched by zero recipes today --
+    // wiring a real 2-button branch here would need FlowRunner to support non-linear replay,
+    // which it doesn't. The generic ReviewConfirmSheet still renders (functionally advances the
+    // flow) but does not visually match this specific node. Flagged for Task 22.
     { screen: "cancelSavings", overlay: "reviewConfirmSheet", figmaNodeId: "3208:53775", advanceLabel: "Continue" },
     { screen: "cancelSavings", overlay: "reviewConfirmSheet", figmaNodeId: "3208:54026", advanceLabel: "Confirm", action: { type: "confirmCancellation" } },
   ],

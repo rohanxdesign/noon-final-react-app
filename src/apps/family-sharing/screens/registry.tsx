@@ -15,6 +15,9 @@ import InviteSheet from "../components/InviteSheet";
 import ShareSheet from "../components/ShareSheet";
 import JoinFamilySheet from "../components/JoinFamilySheet";
 import MemberJoinedToast from "../components/MemberJoinedToast";
+import CancelSavings from "./CancelSavings";
+import CancelReason from "./CancelReason";
+import CancelOptionsSheet from "../components/CancelOptionsSheet";
 
 const stub = (name: string): ComponentType<ScreenProps> =>
   function Stub(props: ScreenProps) { return <StubScreen {...props} name={name} />; };
@@ -28,8 +31,8 @@ export const SCREENS: Record<ScreenId, ComponentType<ScreenProps>> = {
   managePlan: ManagePlan,
   transition: TransitionScreen,
   success: SuccessScreen,
-  cancelSavings: stub("CancelSavings"),
-  cancelReason: stub("CancelReason"),
+  cancelSavings: CancelSavings,
+  cancelReason: CancelReason,
 };
 
 export interface OverlayProps {
@@ -42,10 +45,13 @@ export interface OverlayProps {
 // Task 14 built paymentSheet + reviewConfirmSheet. Task 15 adds inviteSheet,
 // shareSheet, joinFamilySheet + joinErrorSheet (one JoinFamilySheet component,
 // registered under both ids -- it branches internally on `props.joinError`),
-// and memberJoinedToast. cancelOptionsSheet and removeMemberSheet remain
-// Task 18's scope — the map stays Partial so FlowRunner can look up an id and
-// no-op (render nothing) when it's absent, exactly like SCREENS's stubs no-op
-// visually rather than erroring.
+// and memberJoinedToast. Task 18 adds cancelOptionsSheet (shared by 7 live
+// instances across cancel.ts's owner flows AND member.ts's memberLeavesFamily
+// -- see CancelOptionsSheet.tsx's own file comment for the full node survey).
+// removeMemberSheet remains unregistered -- a separate, currently-unused
+// OverlayId, out of every task's scope so far -- the map stays Partial so
+// FlowRunner can look up an id and no-op (render nothing) when it's absent,
+// exactly like SCREENS's stubs no-op visually rather than erroring.
 export const OVERLAYS: Partial<Record<OverlayId, ComponentType<OverlayProps>>> = {
   paymentSheet: PaymentSheet,
   reviewConfirmSheet: ReviewConfirmSheet,
@@ -53,5 +59,6 @@ export const OVERLAYS: Partial<Record<OverlayId, ComponentType<OverlayProps>>> =
   shareSheet: ShareSheet,
   joinFamilySheet: JoinFamilySheet,
   joinErrorSheet: JoinFamilySheet,
+  cancelOptionsSheet: CancelOptionsSheet,
   memberJoinedToast: MemberJoinedToast,
 };

@@ -304,8 +304,79 @@ export const copy: Record<ScreenId | OverlayId, Record<string, string>> = {
     yourFreeUpgradeIsOn: "Your free upgrade is on",
     startAddingLovedOnes: "Start adding your loved ones to the Family plan",
   },
-  cancelSavings: {},
-  cancelReason: {},
+  // Task 18. CancelSavings -- "Leave Family" is the verbatim, byte-identical advanceLabel
+  // across all 7 live screen-level instances (3207:43094, 3208:49861/52565/53463/60153/
+  // 61016/62562 -- confirmed by reading cancel.ts directly, not assumed), so it's used
+  // as-is for the primary CTA below with zero ambiguity. The remaining strings (page
+  // title, trial banner, member-impact label) could NOT be verified against Figma this
+  // session -- no MCP Figma tool and no connected browser extension were available (see
+  // this task's final report) -- so they're written as minimal, honestly-flagged
+  // placeholders in the same tone as this flow's already-verified neighbors (reusing
+  // managePlan.cancelMembership verbatim for the title, since this screen is the very
+  // next one after that row is tapped) rather than invented copy dressed up as verbatim.
+  // Flagged for a real verification pass once Figma access is available (Task 22 already
+  // re-walks every cancel recipe node-by-node, the natural place to close this gap).
+  cancelSavings: {
+    pageTitle: "Cancel membership", // reused verbatim from copy.managePlan.cancelMembership
+    trialBanner: "Your free trial ends in {days} days", // UNVERIFIED placeholder ("Component 224", 3207:46321)
+    savingsTilesTitle: "What you'll lose", // UNVERIFIED placeholder
+    tileTotalLabel: "Total savings",
+    tileDeliveriesLabel: "Free deliveries",
+    tileDealsLabel: "Member deals",
+    membersAffected: "{n} family members will lose access", // UNVERIFIED placeholder
+    leaveFamily: "Leave Family", // verbatim, 7/7 live instances
+  },
+  // Task 18. CancelReason -- "Confirm Cancellation" is the verbatim, byte-identical
+  // advanceLabel across all 4 live instances (3207:44309, 3208:60477/61364/63783).
+  // "The price is quite high" is a real Figma-sourced reason string too, taken directly
+  // from trial-empty's own recorded `selectCancelReason` action in cancel.ts (not
+  // invented) -- the only reason option this session has verbatim confirmation for. The
+  // remaining reason options and the page title are UNVERIFIED placeholders for the same
+  // infrastructure-access reason documented on cancelSavings above.
+  cancelReason: {
+    pageTitle: "Why are you leaving?", // UNVERIFIED placeholder
+    reason1: "The price is quite high", // verbatim, from cancel.ts's trial-empty selectCancelReason action
+    reason2: "I don't use it enough", // UNVERIFIED placeholder
+    reason3: "Found a better alternative", // UNVERIFIED placeholder
+    reason4: "Technical issues", // UNVERIFIED placeholder
+    reason5: "Other", // UNVERIFIED placeholder
+    confirmCancellation: "Confirm Cancellation", // verbatim, 4/4 live instances
+  },
+  // Task 18. CancelOptionsSheet -- shared by 7 live instances across cancel.ts's owner
+  // cancellation flows (3207:43659/43265 [trial-empty, 2-step]; 3208:60272
+  // [posttrial-empty]; 3208:61159 [posttrial-partial]; 3208:63041/63306
+  // [posttrial-full, 2-step]) and member.ts's memberLeavesFamily (3187:24714) --
+  // confirmed directly against both recipe files. NOTE: the task brief also named
+  // 3205:81276 as a possible 8th cancelOptionsSheet instance "in cancel.ts" -- verified
+  // false on inspection: that id doesn't appear in cancel.ts at all, it's member.ts's
+  // OWN memberLeavesFamily end step, `{ screen: "managePlan", figmaNodeId: "3205:81276",
+  // advanceLabel: "(end)" }` with NO `overlay` field, so it isn't a cancelOptionsSheet
+  // instance and isn't modeled by this component. See the Task 18 report.
+  //
+  // CTA copy is verbatim, sourced from the recipes' own advanceLabel field rather than
+  // invented: ctaOwner "Continue" is the majority reading across the 6 owner-context
+  // nodes (4/6 read "Continue"; the other 2 -- the FIRST frame of the trial-empty and
+  // posttrial-full 2-step sequences -- read "Cancel plan" instead, not reproduced here
+  // per this codebase's established "majority reading wins" precedent, same as
+  // ReviewConfirmSheet's typo handling and ManagePlan's page-title inconsistency).
+  // ctaInvitee "Leave Family" is the only member-flow instance, 1/1.
+  //
+  // Title/body copy is UNVERIFIED (same infrastructure gap as cancelSavings/cancelReason
+  // above) EXCEPT titleInvitee/bodyInvitee, which reuse copy.managePlan's own
+  // leaveFamily/leaveFamilySubtitle strings verbatim rather than reinventing them --
+  // legitimate reuse, not a fresh guess, since this sheet re-confirms the exact same
+  // "leave family" action the invitee just tapped on ManagePlan.
+  cancelOptionsSheet: {
+    title: "Cancel membership", // reused verbatim from copy.managePlan.cancelMembership
+    titleInvitee: "Leave Family plan", // reused verbatim from copy.managePlan.leaveFamily
+    savingsBody: "You'll lose dhm{amount} in noon One savings if you cancel.", // UNVERIFIED placeholder
+    bodyInvitee: "You'll lose benefits upon leaving the Family plan", // reused verbatim from copy.managePlan.leaveFamilySubtitle
+    membersAffected: "{n} family members will lose access", // UNVERIFIED placeholder
+    switchSuggestionTitle: "Not ready to leave?", // UNVERIFIED placeholder
+    switchSuggestionBody: "Switch to an Individual plan instead and keep some of your benefits.", // UNVERIFIED placeholder
+    ctaOwner: "Continue", // verbatim majority reading, 4/6 owner-context instances
+    ctaInvitee: "Leave Family", // verbatim, 1/1 member-flow instance
+  },
   // Task 14. PaymentSheet -- verified against both flow-variant nodes (3261:103309
   // family, 3187:70138 duo; "Free Upgrade" body 3187:67673/I3261:103880 in-context) --
   // identical composition/copy on both, only the plan name/price differ (state-derived).
