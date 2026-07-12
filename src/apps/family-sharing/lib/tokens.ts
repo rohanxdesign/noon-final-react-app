@@ -102,6 +102,24 @@ export const finalTokens = {
       // (same situation as `hairline` above, kept distinct since the two nodes bind
       // different variables despite both being near-white).
       reviewBoxBorder: "#fafafa",
+      // Task 16 (Transition/Success interstitials -- 3180:33497/3180:33506/3161:31141/
+      // 3161:33072/3161:31150/3161:33081). Bound to Figma's "Light/Text/Highest Emphasis"
+      // and "Light/Text/Med Emphasis" variables -- both resolve to the same base color
+      // (#02060c, confirmed via get_variable_defs on 3180:33506) at two different layer
+      // opacities (0.92 headline / 0.6 subtitle), not two different hues. Distinct from
+      // finalTokens.color.text.primary/tertiary (#1d2539/#666d85) -- these interstitials
+      // are the only surfaces in this file binding this near-black/opacity family rather
+      // than the curated colour/text-n-icon/* set everything else uses.
+      interstitialHeadline: "rgba(2,6,12,0.92)",
+      interstitialSubtitle: "rgba(2,6,12,0.6)",
+      // Frame fill behind all 4 interstitial nodes -- Figma's own unbound literal (a pale
+      // mint), the sliver of frame not obscured by the gradient-glow image on top of it
+      // (fully covered in every node surveyed, kept for robustness at other viewport sizes).
+      interstitialFrameBg: "#f3fff3",
+      // Task 17 (NoonHome account variant, "Need help?" chip -- Component 218, 3161:30249).
+      // Raw literal border in Figma -- blue/200 (#bbdaff), not a bound colour/* variable;
+      // confirmed directly in the chip's own markup via get_design_context on 3161:30127.
+      needHelpBorder: "#bbdaff",
     },
   },
   // Raw px values as string keys, not a semantic t-shirt scale -- Figma didn't

@@ -17,7 +17,42 @@ import type { ScreenId, OverlayId } from "./state/recipes/types";
  * of each string regardless of which screen currently hosts the overlay.
  */
 export const copy: Record<ScreenId | OverlayId, Record<string, string>> = {
-  noonHome: {},
+  // Task 17. NoonHome -- account variant ("01 · Home (logged-in subscriber)", 3161:30127
+  // upgrade-family / 3161:32232 upgrade-duo) verified byte-for-byte identical component tree
+  // and copy on both node ids via get_design_context + a direct screenshot diff of both. The
+  // storefront variant (3180:31300 et al., shared by all 4 member recipes) is a flattened
+  // backdrop image behind the join-family sheet (see NoonHome.tsx's file comment) -- no screen
+  // copy of its own here; the join-family sheet on top of it owns its own copy (Task 15).
+  noonHome: {
+    profileInitial: "A",
+    profileName: "Rahul Jaiswal",
+    profileEmail: "rjaiswal@gmail.com",
+    // Ligature-rendered "dhm" for the dirham glyph -- project-wide precedent (ManagePlan/
+    // PlanSheet's own "dhm{price}" strings render the same way).
+    savedPromo: "dhm94 saved in 12 days",
+    myOrders: "My Orders",
+    myWishlist: "My Wishlist",
+    noonCredits: "noon Credits",
+    noonCreditsAmount: "dhm320.21",
+    addresses: "Addresses",
+    manageCards: "Manage Cards",
+    returns: "Returns",
+    warrantyClaims: "Warranty claims",
+    language: "Language",
+    languageEnglish: "English",
+    languageArabic: "العربية",
+    country: "Country",
+    preferences: "Preferences",
+    notifications: "Notifications",
+    accountSecurity: "Account Security",
+    signOut: "Sign out",
+    policies: "Policies",
+    sellOnNoon: "Sell on noon",
+    copyright: "© 2025 noon. All Rights Reserved",
+    joinedNoonApp: "You joined the noon app in June 2022.",
+    versionInfo: "Version 4.63.0 designed with care in every detail.",
+    needHelp: "Need help?",
+  },
   oneLanding: {
     // ActivePlanCard (3136:22678, 3636:25801/25917/26048/26179) — verbatim per plan.type/utility.
     activePlanLabel: "Active plan",
@@ -226,8 +261,49 @@ export const copy: Record<ScreenId | OverlayId, Record<string, string>> = {
     leaveFamily: "Leave Family plan",
     leaveFamilySubtitle: "You'll lose benefits upon leaving the Family plan",
   },
-  transition: {},
-  success: {},
+  // Task 16. TransitionScreen -- "03 · Confirmation" pattern, headline-only interstitial.
+  transition: {
+    // member-accepts-invite's only live step (3180:33497) -- verified via get_screenshot.
+    // Verbatim; renders regardless of narrative fit (Figma is the source of truth even though
+    // "upgrading your experience" reads oddly for a member joining someone else's plan rather
+    // than upgrading their own -- not edited).
+    upgradingYourExperience: "Upgrading your experience",
+    // upgrade-family's transition step (upgrade.ts) has figmaNodeId: "" -- deferred to Task 19
+    // ("resolve node in Task 19"). No verbatim string exists for it yet; this is a same-shape
+    // placeholder so the screen renders sensibly in the meantime rather than blank, expected to
+    // be replaced once that node is resolved.
+    settingUpYourPlan: "Setting up your plan",
+  },
+  // Task 16. SuccessScreen -- checkmark-badge (member) and headline-only (owner) variants.
+  success: {
+    // member-accepts-invite's success step (3180:33506, "04 · Confirmation") -- checkmark badge
+    // + congratulations copy, verified via get_screenshot. "{name}" is the invitee's own
+    // name -- FinalFlowState has no field for "current user's own display name" (same gap
+    // noted in OneLanding.tsx/FamilyHeader.tsx's file comments), so this is a template
+    // substituted from MEMBER_POOL[0]'s given name in the component rather than invented
+    // state (Figma's own literal reads "Siddarth", one letter off MEMBER_POOL's "Kumar
+    // Siddharth" -- this prototype's own established spelling is used instead for internal
+    // consistency, see SuccessScreen.tsx's file comment).
+    congratulations: "Congratulations, {name}!",
+    nowMemberOfNoonOne: "You are now a member of noon One",
+    // upgrade-family (3161:31141) and upgrade-duo (3161:33072) success steps -- BOTH nodes are
+    // "06 · Confirmation" headline-only interstitials in live Figma (verified via
+    // get_screenshot: no checkmark, no subtitle, structurally a transition screen, not a
+    // success screen) -- byte-identical copy on both flows, not "Setting up your Duo plan" on
+    // the duo node. See SuccessScreen.tsx's file comment for the full Figma-drift writeup: the
+    // checkmark-bearing content that visually matches what a "success" screen should look like
+    // actually lives ONE STEP LATER in both flows, at "07 · Confirmation" (3161:31150 /
+    // 3161:33081, also verified byte-identical between the two via get_screenshot) -- which
+    // upgrade.ts currently types as `screen: "oneLanding"`, not `"success"`. Rendered verbatim
+    // as its own headline-only success variant here since this task builds against the
+    // CURRENTLY WIRED node, not a reassignment -- flagged for Task 19.
+    settingUpYourFamilyPlan: "Setting up your Family plan",
+    // The true checkmark content at "07 · Confirmation" (3161:31150 / 3161:33081) -- not
+    // currently wired to the `success` screen id (see above), kept here verbatim (verified via
+    // get_screenshot on both nodes) so it's ready the moment Task 19 corrects the wiring.
+    yourFreeUpgradeIsOn: "Your free upgrade is on",
+    startAddingLovedOnes: "Start adding your loved ones to the Family plan",
+  },
   cancelSavings: {},
   cancelReason: {},
   // Task 14. PaymentSheet -- verified against both flow-variant nodes (3261:103309

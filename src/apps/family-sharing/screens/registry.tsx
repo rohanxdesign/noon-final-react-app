@@ -2,10 +2,13 @@ import type { ComponentType } from "react";
 import type { FlowStep, OverlayId, ScreenId } from "../state/recipes/types";
 import type { FinalFlowState } from "../state/types";
 import StubScreen, { type ScreenProps } from "./StubScreen";
+import NoonHome from "./NoonHome";
 import OneLanding from "./OneLanding";
 import ManagePlan from "./ManagePlan";
 import PlanSheet from "./PlanSheet";
 import ExplorePlans from "./ExplorePlans";
+import TransitionScreen from "./TransitionScreen";
+import SuccessScreen from "./SuccessScreen";
 import PaymentSheet from "../components/PaymentSheet";
 import ReviewConfirmSheet from "../components/ReviewConfirmSheet";
 import InviteSheet from "../components/InviteSheet";
@@ -18,13 +21,13 @@ const stub = (name: string): ComponentType<ScreenProps> =>
 
 // Replaced screen-by-screen in Phase B.
 export const SCREENS: Record<ScreenId, ComponentType<ScreenProps>> = {
-  noonHome: stub("NoonHome"),
+  noonHome: NoonHome,
   oneLanding: OneLanding,
   planSheet: PlanSheet,
   explorePlans: ExplorePlans,
   managePlan: ManagePlan,
-  transition: stub("Transition"),
-  success: stub("Success"),
+  transition: TransitionScreen,
+  success: SuccessScreen,
   cancelSavings: stub("CancelSavings"),
   cancelReason: stub("CancelReason"),
 };
