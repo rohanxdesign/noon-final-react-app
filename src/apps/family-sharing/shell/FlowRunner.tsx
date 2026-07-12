@@ -22,6 +22,10 @@ export default function FlowRunner({ recipe, step, onStepChange, onExit, onNextF
   const [pillOpen, setPillOpen] = useState(false);
 
   const advance = () => onStepChange(Math.min(clamped + 1, recipe.steps.length - 1));
+  // Dismissing an overlay (scrim tap, toast "X") has no real "cancel" concept in this
+  // replay-driven model -- there's no state to revert to except the previous step, so
+  // it mirrors FlowPill's own back button rather than doing nothing.
+  const back = () => onStepChange(Math.max(0, clamped - 1));
 
   useEffect(() => {
     if (!current.autoAdvanceMs || clamped >= recipe.steps.length - 1) return;
@@ -42,7 +46,7 @@ export default function FlowRunner({ recipe, step, onStepChange, onExit, onNextF
           transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
         >
           <Screen state={state} onAdvance={advance} overlay={current.overlay} joinError={current.joinError} />
-          {Overlay && <Overlay state={state} onAdvance={advance} joinError={current.joinError} />}
+          {Overlay && <Overlay state={state} onAdvance={advance} onClose={back} joinError={current.joinError} />}
         </motion.div>
       </AnimatePresence>
       <FlowPill
@@ -50,7 +54,7 @@ export default function FlowRunner({ recipe, step, onStepChange, onExit, onNextF
         step={clamped}
         open={pillOpen}
         onToggle={() => setPillOpen((v) => !v)}
-        onBack={() => onStepChange(Math.max(0, clamped - 1))}
+        onBack={back}
         onJump={onStepChange}
         onExit={onExit}
         onNextFlow={onNextFlow}
